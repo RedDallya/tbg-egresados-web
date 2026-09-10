@@ -10,6 +10,31 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .product-card[data-category]{cursor:pointer;position:relative}
+    .product-card[data-category]:focus-visible{outline:2px solid var(--acid);outline-offset:4px}
+    .product-card .view-models{display:inline-block;margin-top:18px;color:var(--acid);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .models-modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
+    .models-modal.is-open{display:flex}
+    .models-dialog{position:relative;width:min(1120px,96vw);max-height:90vh;overflow:auto;background:#071e17;border:1px solid #38594a;border-radius:22px;box-shadow:0 30px 100px rgba(0,0,0,.65);padding:clamp(24px,4vw,48px)}
+    .models-close{position:absolute;right:18px;top:16px;width:42px;height:42px;border-radius:50%;border:1px solid #46695a;background:#0d2a21;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+    .models-close:hover{border-color:var(--acid);color:var(--acid)}
+    .models-head{padding-right:58px;margin-bottom:26px}
+    .models-head .eyebrow{margin-bottom:10px}
+    .models-head h2{font-family:Anton,Impact,sans-serif;text-transform:uppercase;font-size:clamp(38px,5vw,66px);line-height:.95;margin:0 0 12px}
+    .models-head p{margin:0;color:var(--muted);line-height:1.55}
+    .models-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .model-item{overflow:hidden;border:1px solid var(--line);border-radius:15px;background:#0b251d}
+    .model-item img{width:100%;aspect-ratio:4/5;object-fit:cover;background:#102c23}
+    .model-info{padding:15px 16px 18px}
+    .model-info strong{display:block;font-size:17px;margin-bottom:5px}
+    .model-info span{color:var(--muted);font-size:13px}
+    .models-empty{grid-column:1/-1;padding:42px 20px;text-align:center;border:1px dashed #38594a;border-radius:14px;color:var(--muted)}
+    .models-actions{display:flex;justify-content:center;margin-top:26px}
+    body.modal-open{overflow:hidden}
+    @media(max-width:760px){.models-modal{padding:10px}.models-dialog{width:100%;max-height:94vh;border-radius:16px;padding:24px 16px}.models-grid{grid-template-columns:1fr 1fr}.models-close{right:12px;top:12px}.models-head{padding-right:46px}}
+    @media(max-width:480px){.models-grid{grid-template-columns:1fr}.model-item img{aspect-ratio:5/4}}
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -51,12 +76,12 @@
         <p>Elegí la base, los colores y los detalles. TBG acompaña a tu curso desde la idea hasta la entrega.</p>
       </div>
       <div class="product-grid">
-        <article class="product-card"><span>01</span><h3>Camperas</h3><p>Modelos urbanos, universitarios y personalizados.</p></article>
-        <article class="product-card"><span>02</span><h3>Buzos</h3><p>Clásicos, oversize y boxy con identidad de promo.</p></article>
-        <article class="product-card"><span>03</span><h3>Chombas</h3><p>Opciones deportivas, modernas y combinadas.</p></article>
-        <article class="product-card"><span>04</span><h3>Remeras</h3><p>Diseños limpios y combinaciones para acompañar el conjunto.</p></article>
-        <article class="product-card"><span>05</span><h3>Banderas</h3><p>Una pieza central para representar a toda la promo.</p></article>
-        <article class="product-card"><span>06</span><h3>Egresaditos</h3><p>Modelos pensados para jardín y primer egreso.</p></article>
+        <article class="product-card" data-category="camperas" role="button" tabindex="0" aria-haspopup="dialog"><span>01</span><h3>Camperas</h3><p>Modelos urbanos, universitarios y personalizados.</p><b class="view-models">Ver modelos →</b></article>
+        <article class="product-card" data-category="buzos" role="button" tabindex="0" aria-haspopup="dialog"><span>02</span><h3>Buzos</h3><p>Clásicos, oversize y boxy con identidad de promo.</p><b class="view-models">Ver modelos →</b></article>
+        <article class="product-card" data-category="chombas" role="button" tabindex="0" aria-haspopup="dialog"><span>03</span><h3>Chombas</h3><p>Opciones deportivas, modernas y combinadas.</p><b class="view-models">Ver modelos →</b></article>
+        <article class="product-card" data-category="remeras" role="button" tabindex="0" aria-haspopup="dialog"><span>04</span><h3>Remeras</h3><p>Diseños limpios y combinaciones para acompañar el conjunto.</p><b class="view-models">Ver modelos →</b></article>
+        <article class="product-card" data-category="banderas" role="button" tabindex="0" aria-haspopup="dialog"><span>05</span><h3>Banderas</h3><p>Una pieza central para representar a toda la promo.</p><b class="view-models">Ver modelos →</b></article>
+        <article class="product-card" data-category="egresaditos" role="button" tabindex="0" aria-haspopup="dialog"><span>06</span><h3>Egresaditos</h3><p>Modelos pensados para jardín y primer egreso.</p><b class="view-models">Ver modelos →</b></article>
       </div>
     </section>
 
@@ -114,6 +139,21 @@
       </div>
     </section>
   </main>
+
+  <div class="models-modal" id="modelsModal" aria-hidden="true">
+    <div class="models-dialog" role="dialog" aria-modal="true" aria-labelledby="modelsTitle">
+      <button class="models-close" type="button" aria-label="Cerrar modelos">×</button>
+      <div class="models-head">
+        <p class="eyebrow">COLECCIÓN TBG 2027</p>
+        <h2 id="modelsTitle">Modelos</h2>
+        <p id="modelsDescription">Elegí el modelo que más represente a tu promo.</p>
+      </div>
+      <div class="models-grid" id="modelsGrid"></div>
+      <div class="models-actions">
+        <a class="btn btn-primary" id="modelsWhatsapp" href="https://wa.me/5491123958808" target="_blank" rel="noopener">CONSULTAR POR ESTOS MODELOS</a>
+      </div>
+    </div>
+  </div>
 
   <a class="floating-wa" href="https://wa.me/5491123958808?text=Hola%20TBG%2C%20quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">✆</a>
 
